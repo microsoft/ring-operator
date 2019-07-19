@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-rings-v1-master
+  labels:
+    service: hello-rings
+    version: v1
+    branch: master
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      service: hello-rings
+      version: v1
+      branch: master
+  template:
+    metadata:
+      labels:
+        service: hello-rings
+        version: v1
+        branch: master
+    spec:
+      containers:
+        - image: docker.io/kennethreitz/httpbin
+          imagePullPolicy: IfNotPresent
+          name: httpbin
+          ports:
+          - containerPort: 80
+          resources:
+            requests:
+              cpu: 500m
+              memory: 500Mi
+            limits:
+              cpu: 2000m
+              memory: 250Mi
+---
+apiVersion: rings.microsoft.com/v1alpha1
+kind: Ring
+metadata:
+  name: hello-rings-v1-master
+spec:
+  deploy: true
+  routing:
+    group:
+      name: "*"
+    service: hello-rings
+    version: v1
+    branch: master
+    ports:
+      - port: 80
