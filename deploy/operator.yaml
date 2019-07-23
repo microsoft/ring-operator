@@ -88,7 +88,7 @@ spec:
       serviceAccountName: ring-operator
       containers:
         - name: ring-operator
-          image: ring-operator.azurecr.io/ring-operator:v0.0.1-v1alpha1
+          image: mcr.microsoft.com/k8s/bedrock/ring-operator:v1alpha1
           command: [ring-operator]
           imagePullPolicy: IfNotPresent
           env:
