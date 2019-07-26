@@ -1,0 +1,69 @@
+resources:
+  containers:
+  - container: golang1.12
+    image: devcrewsacr.azurecr.io/operator-sdk-builder:latest
+    endpoint: devcrewsacr
+    options: '-v /usr/bin/docker:/usr/bin/docker -v /var/run/docker.sock:/var/run/docker.sock'
+
+trigger:
+  paths:
+    exclude:
+    - assets/*
+    - deploy/*
+
+name: $(Date:yyyyMMdd)$(Rev:r)
+variables:
+  OperatorImage: devcrewsacr.azurecr.io/public/k8s/bedrock/ring-operator
+  MyBuildId: $(Date:yyyyMMdd)$(Rev:r)
+  Author: $(Build.RequestedForEmail)
+  BranchName: $(Build.SourceBranchName)
+
+jobs:      
+######################################################################
+# Build
+######################################################################
+  - job: Build
+    container: golang1.12
+    displayName: Build Operator
+    steps:
+      - task: CacheBeta@0
+        inputs:
+          key: $(Agent.OS)
+          path: $(Pipeline.Workspace)/vendor
+        displayName: 'Cache yarn'
+
+      - script: go build cmd/manager/main.go
+
+######################################################################
+# Tests
+######################################################################
+  - job: UnitTests
+    container: golang1.12
+    displayName: Run unit tests
+    dependsOn: Build
+    steps:
+      - script: go test -cover $(go list ./... | grep -v /vendor/)
+
+######################################################################
+# Container Creation
+######################################################################
+  - job: Containerize
+    displayName: Build and push container
+    dependsOn: UnitTests
+    steps:
+      - script: |
+            set -ex
+            sudo groupadd -o -g $(stat --format='%g' /var/run/docker.sock) docker
+            sudo usermod -a -G docker $(whoami)
+        displayName: Allow current user to access the docker socket
+
+      - task: Docker@2
+        displayName: Login to Azure Container Registry
+        inputs:
+          command: login
+          containerRegistry: $(AzureCRName)
+      
+      - script: operator-sdk build $(OperatorPath):$()
+      - script: | 
+            docker push $(OperatorPath):$(MyBuildId)
+            docker push $(OperatorPath):latest
