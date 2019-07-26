@@ -34,15 +34,16 @@ jobs:
     container: golang
     displayName: Build Operator
     steps:
+      - script: chmod -R 777 /go
       - task: CacheBeta@0
         inputs:
           key: |
             $(Agent.OS)
             $(Build.SourcesDirectory)/go.sum
-          path: /go/pkg/mod
+          path: /home/go/pkg/mod
         displayName: Cache Packages
       - script: |
-            ls -l /
+            ls -l /home
             ls -l /go
             ls -l /go/pkg
             ls -l /go/pkg/mod
