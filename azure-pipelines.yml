@@ -33,7 +33,7 @@ jobs:
           key: |
             $(Agent.OS)
             $(Build.SourcesDirectory)/go.sum
-          path: $(GOPATH)/pkg/mod
+          path: $GOPATH/pkg/mod
         displayName: Cache Packages
 
       - script: go build cmd/manager/main.go
@@ -52,7 +52,7 @@ jobs:
             vendor
             $(Agent.OS)
             $(Build.SourcesDirectory)/go.sum
-          path: $(GOPATH)/pkg/mod
+          path: $GOPATH/pkg/mod
         displayName: Cache Packages
 
       - script: go test -cover $(go list ./...)
