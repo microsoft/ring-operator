@@ -17,9 +17,6 @@ resources:
 
 name: $(Date:yyyyMMdd)$(Rev:r)
 variables:
-  GOPATH: '$(system.defaultWorkingDirectory)/gopath'
-  modulePath: '$(GOPATH)/src/github.com/$(build.repository.name)'
-  
   OperatorImage: devcrewsacr.azurecr.io/public/k8s/bedrock/ring-operator
   MyBuildId: $(Date:yyyyMMdd)$(Rev:r)
   
@@ -31,24 +28,7 @@ jobs:
     container: golang
     displayName: Build Operator
     steps:
-      - script: |
-            mkdir -p $(GOPATH)/bin $(GOPATH)/pkg $(GOPATH)/src $(modulePath)
-            shopt -s extglob
-            shopt -s dotglob
-            mv !(gopath) '$(modulePath)'
-      
-      - task: CacheBeta@0
-        inputs:
-          key: |
-            $(Agent.OS)
-            $(Build.SourcesDirectory)/go.sum
-          path: $(GOPATH)/pkg/mod
-        displayName: Cache Packages
-
-      - script: |
-            go mod download
-            go build cmd/manager/main.go
-        workingDirectory: $(modulePath)
+      - script: go build cmd/manager/main.go
 
 ######################################################################
 # Tests
@@ -58,14 +38,6 @@ jobs:
     displayName: Run unit tests
     dependsOn: Build
     steps:
-      - task: CacheBeta@0
-        inputs:
-          key: |
-            $(Agent.OS)
-            $(Build.SourcesDirectory)/go.sum
-          path: $GOPATH/pkg/mod
-        displayName: Cache Packages
-
       - script: go test -cover $(go list ./...)
 
 ######################################################################
