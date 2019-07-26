@@ -33,7 +33,7 @@ jobs:
           key: |
             $(Agent.OS)
             $(Build.SourcesDirectory)/go.sum
-          path: $(Pipeline.Workspace)/vendor
+          path: $(Build.SourcesDirectory)/vendor
         displayName: Cache Vendor files
 
       - script: |
@@ -54,7 +54,7 @@ jobs:
             vendor
             $(Agent.OS)
             $(Build.SourcesDirectory)/go.sum
-          path: $(Pipeline.Workspace)/vendor
+          path: $(Build.SourcesDirectory)/vendor
         displayName: Cache Vendor files
 
       - script: |
