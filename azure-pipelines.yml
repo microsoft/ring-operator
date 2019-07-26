@@ -34,6 +34,7 @@ jobs:
       - script: |
             mkdir -p $(GOPATH)/bin $(GOPATH)/pkg $(GOPATH)/src $(modulePath)
             mv $(System.DefaultWorkingDirectory) $(modulePath)
+      
       - task: CacheBeta@0
         inputs:
           key: |
@@ -43,6 +44,7 @@ jobs:
         displayName: Cache Packages
 
       - script: go build cmd/manager/main.go
+        workingDirectory: $(modulePath)
 
 ######################################################################
 # Tests
