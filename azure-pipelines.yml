@@ -31,17 +31,11 @@ jobs:
     container: golang
     displayName: Build Operator
     steps:
-
       - script: |
-          mkdir -p '$(GOBIN)'
-          mkdir -p '$(GOPATH)/pkg'
-          mkdir -p '$(modulePath)'
-          shopt -s extglob
-          shopt -s dotglob
-          mv !(gopath) '$(modulePath)'
-          echo '##vso[task.prependpath]$(GOBIN)'
-          echo '##vso[task.prependpath]$(GOROOT)/bin'
-        displayName: 'Set up the Go workspace'
+            mkdir -p $(GOPATH)/bin $(GOPATH)/pkg $(GOPATH)/src $(modulePath)
+            shopt -s extglob
+            shopt -s dotglob
+            mv !(gopath) '$(modulePath)'
       
       - task: CacheBeta@0
         inputs:
@@ -51,7 +45,9 @@ jobs:
           path: $(GOPATH)/pkg/mod
         displayName: Cache Packages
 
-      - script: go build cmd/manager/main.go
+      - script: |
+            go mod download
+            go build cmd/manager/main.go
         workingDirectory: $(modulePath)
 
 ######################################################################
