@@ -17,12 +17,9 @@ resources:
 
 name: $(Date:yyyyMMdd)$(Rev:r)
 variables:
-#   # Specific to Golang
-#   GOBIN:  '$(GOPATH)/bin' # Go binaries path
-#   GOROOT: '/usr/local/go' # Go installation path
-#   GOPATH: '$(system.defaultWorkingDirectory)/gopath' # Go workspace path
-#   modulePath: '$(GOPATH)/src/github.com/$(build.repository.name)' # Path to the module's code
-
+  GOPATH: '$(Agent.BuildDirectory)/gopath'
+  modulePath: '$(GOPATH)/src/github.com/$(build.repository.name)'
+  
   OperatorImage: devcrewsacr.azurecr.io/public/k8s/bedrock/ring-operator
   MyBuildId: $(Date:yyyyMMdd)$(Rev:r)
   
@@ -34,18 +31,17 @@ jobs:
     container: golang
     displayName: Build Operator
     steps:
+      - script: |
+            mkdir -p $(GOPATH)/bin $(GOPATH)/pkg $(GOPATH)/src $(modulePath)
+            mv $(System.DefaultWorkingDirectory) $(modulePath)
       - task: CacheBeta@0
         inputs:
           key: |
             $(Agent.OS)
             $(Build.SourcesDirectory)/go.sum
-          path: /home/go/pkg/mod
+          path: $(GOPATH)/pkg/mod
         displayName: Cache Packages
-      - script: |
-            ls -l /home
-            ls -l /go
-            ls -l /go/pkg
-            ls -l /go/pkg/mod
+
       - script: go build cmd/manager/main.go
 
 ######################################################################
