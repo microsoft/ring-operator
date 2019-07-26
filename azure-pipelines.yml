@@ -9,11 +9,11 @@ resources:
     endpoint: AzureCR
     options: '-v /usr/bin/docker:/usr/bin/docker -v /var/run/docker.sock:/var/run/docker.sock'
 
-trigger:
-  paths:
-    exclude:
-    - assets/*
-    - deploy/*
+# trigger:
+#   paths:
+#     exclude:
+#     - assets/*
+#     - deploy/*
 
 name: $(Date:yyyyMMdd)$(Rev:r)
 variables:
@@ -36,11 +36,9 @@ jobs:
           path: $(Pipeline.Workspace)/vendor
         displayName: Cache Vendor files
 
-      - script: go mod download
-      - script: ls -l /go/pkg/mod
-      - script: ls -l $(Pipeline.Workspace)
-
-      - script: go build cmd/manager/main.go
+      - script: |
+            go mod vendor
+            go build cmd/manager/main.go
 
 ######################################################################
 # Tests
@@ -58,8 +56,9 @@ jobs:
             $(Build.SourcesDirectory)/go.sum
           path: $(Pipeline.Workspace)/vendor
         displayName: Cache Vendor files
+
       - script: |
-            go mod download
+            go mod vendor
             go test -cover $(go list ./...)
 
 ######################################################################
