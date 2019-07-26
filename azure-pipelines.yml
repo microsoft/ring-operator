@@ -2,7 +2,7 @@ resources:
   containers:
   - container: golang1.12
     image: devcrewsacr.azurecr.io/operator-sdk-builder:latest
-    endpoint: devcrewsacr
+    endpoint: AzureCR
     options: '-v /usr/bin/docker:/usr/bin/docker -v /var/run/docker.sock:/var/run/docker.sock'
 
 trigger:
@@ -61,9 +61,11 @@ jobs:
         displayName: Login to Azure Container Registry
         inputs:
           command: login
-          containerRegistry: devcrewsacr
+          azureSubscriptionEndpoint: AzureRM
+          containerRegistry: AzureCR
       
-      - script: operator-sdk build $(OperatorPath):$()
+      - script: operator-sdk build $(OperatorPath):$(MyBuildId)
+      - script: operator-sdk build $(OperatorPath):$(latest)
       - script: | 
             docker push $(OperatorPath):$(MyBuildId)
             docker push $(OperatorPath):latest
