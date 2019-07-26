@@ -30,7 +30,7 @@ jobs:
         inputs:
           key: $(Agent.OS)
           path: $(Pipeline.Workspace)/vendor
-        displayName: 'Cache yarn'
+        displayName: Cache Vendor files
 
       - script: go build cmd/manager/main.go
 

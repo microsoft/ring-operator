@@ -1,6 +1,6 @@
-FROM golang:1.12.7-alpine3.10
+FROM golang:1.12.7
 
-RUN apk add git
+RUN apt-get -qq -y install git
 
 ENV RELEASE_VERSION v0.9.0
 
