@@ -17,7 +17,7 @@ resources:
 
 name: $(Date:yyyyMMdd)$(Rev:r)
 variables:
-  GOPATH: '$(Agent.BuildDirectory)/gopath'
+  GOPATH: '$(system.defaultWorkingDirectory)/gopath'
   modulePath: '$(GOPATH)/src/github.com/$(build.repository.name)'
   
   OperatorImage: devcrewsacr.azurecr.io/public/k8s/bedrock/ring-operator
@@ -31,11 +31,17 @@ jobs:
     container: golang
     displayName: Build Operator
     steps:
+
       - script: |
-            ls -l $(modulePath)
-            mkdir -p $(GOPATH)/bin $(GOPATH)/pkg $(GOPATH)/src $(modulePath)
-            shopt -s extglob
-            mv !(gopath) '$(modulePath)'
+          mkdir -p '$(GOBIN)'
+          mkdir -p '$(GOPATH)/pkg'
+          mkdir -p '$(modulePath)'
+          shopt -s extglob
+          shopt -s dotglob
+          mv !(gopath) '$(modulePath)'
+          echo '##vso[task.prependpath]$(GOBIN)'
+          echo '##vso[task.prependpath]$(GOROOT)/bin'
+        displayName: 'Set up the Go workspace'
       
       - task: CacheBeta@0
         inputs:
