@@ -1,6 +1,6 @@
 resources:
   containers:
-  - container: golang1.12
+  - container: golang
     image: devcrewsacr.azurecr.io/operator-sdk-builder:latest
     endpoint: AzureCR
     options: '-v /usr/bin/docker:/usr/bin/docker -v /var/run/docker.sock:/var/run/docker.sock'
@@ -23,14 +23,17 @@ jobs:
 # Build
 ######################################################################
   - job: Build
-    container: golang1.12
+    container: golang
     displayName: Build Operator
     steps:
-      # - task: CacheBeta@0
-      #   inputs:
-      #     key: $(Agent.OS)
-      #     path: $(Pipeline.Workspace)/vendor
-      #   displayName: Cache Vendor files
+      - task: CacheBeta@0
+        inputs:
+          key: |
+            vendor
+            $(Agent.OS)
+            $(Build.SourcesDirectory)/go.mod
+          path: $(Pipeline.Workspace)/vendor
+        displayName: Cache Vendor files
 
       - script: go build cmd/manager/main.go
 
@@ -38,7 +41,7 @@ jobs:
 # Tests
 ######################################################################
   - job: UnitTests
-    container: golang1.12
+    container: golang
     displayName: Run unit tests
     dependsOn: Build
     steps:
@@ -48,6 +51,7 @@ jobs:
 # Container Creation
 ######################################################################
   - job: Containerize
+    container: golang
     displayName: Build and push container
     dependsOn: UnitTests
     steps:
