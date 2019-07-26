@@ -3,6 +3,10 @@ resources:
   - container: golang
     image: devcrewsacr.azurecr.io/operator-sdk-builder:latest
     endpoint: AzureCR
+
+  - container: docker
+    image: devcrewsacr.azurecr.io/operator-sdk-builder:latest
+    endpoint: AzureCR
     options: '-v /usr/bin/docker:/usr/bin/docker -v /var/run/docker.sock:/var/run/docker.sock'
 
 trigger:
@@ -15,9 +19,7 @@ name: $(Date:yyyyMMdd)$(Rev:r)
 variables:
   OperatorImage: devcrewsacr.azurecr.io/public/k8s/bedrock/ring-operator
   MyBuildId: $(Date:yyyyMMdd)$(Rev:r)
-  Author: $(Build.RequestedForEmail)
-  BranchName: $(Build.SourceBranchName)
-
+  
 jobs:      
 ######################################################################
 # Build
@@ -31,11 +33,14 @@ jobs:
           key: |
             vendor
             $(Agent.OS)
-            $(Build.SourcesDirectory)/go.mod
+            $(Build.SourcesDirectory)/go.sum
           path: $(Pipeline.Workspace)/vendor
         displayName: Cache Vendor files
 
+      - script: ls -l
+
       - script: go build cmd/manager/main.go
+      - script: go mod vendor
 
 ######################################################################
 # Tests
@@ -51,7 +56,7 @@ jobs:
 # Container Creation
 ######################################################################
   - job: Containerize
-    container: golang
+    container: docker
     displayName: Build and push container
     dependsOn: UnitTests
     steps:
