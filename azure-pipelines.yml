@@ -61,7 +61,7 @@ jobs:
         displayName: Login to Azure Container Registry
         inputs:
           command: login
-          containerRegistry: $(AzureCRName)
+          containerRegistry: devcrewsacr
       
       - script: operator-sdk build $(OperatorPath):$()
       - script: | 
