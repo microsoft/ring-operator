@@ -33,12 +33,10 @@ jobs:
           key: |
             $(Agent.OS)
             $(Build.SourcesDirectory)/go.sum
-          path: $(Build.SourcesDirectory)/vendor
-        displayName: Cache Vendor files
+          path: $(GOPATH)/pkg/mod
+        displayName: Cache Packages
 
-      - script: |
-            go mod vendor
-            go build cmd/manager/main.go
+      - script: go build cmd/manager/main.go
 
 ######################################################################
 # Tests
@@ -54,12 +52,10 @@ jobs:
             vendor
             $(Agent.OS)
             $(Build.SourcesDirectory)/go.sum
-          path: $(Build.SourcesDirectory)/vendor
-        displayName: Cache Vendor files
+          path: $(GOPATH)/pkg/mod
+        displayName: Cache Packages
 
-      - script: |
-            go mod vendor
-            go test -cover $(go list ./...)
+      - script: go test -cover $(go list ./...)
 
 ######################################################################
 # Container Creation
