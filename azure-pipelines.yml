@@ -36,12 +36,11 @@ jobs:
           path: $(Pipeline.Workspace)/vendor
         displayName: Cache Vendor files
 
+      - script: go mod download
       - script: ls -l /go/pkg/mod
       - script: ls -l $(Pipeline.Workspace)
 
-      - script: |
-            go mod download
-            go build cmd/manager/main.go
+      - script: go build cmd/manager/main.go
 
 ######################################################################
 # Tests
