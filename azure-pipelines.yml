@@ -33,7 +33,10 @@ jobs:
     steps:
       - script: |
             mkdir -p $(GOPATH)/bin $(GOPATH)/pkg $(GOPATH)/src $(modulePath)
+            shopt -s extglob
             mv !(gopath) '$(modulePath)'
+            echo '##vso[task.prependpath]$(GOBIN)'
+            echo '##vso[task.prependpath]$(GOROOT)/bin'
       
       - task: CacheBeta@0
         inputs:
