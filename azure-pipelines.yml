@@ -34,7 +34,6 @@ jobs:
     container: golang
     displayName: Build Operator
     steps:
-      - script: chmod -R 777 /go
       - task: CacheBeta@0
         inputs:
           key: |
