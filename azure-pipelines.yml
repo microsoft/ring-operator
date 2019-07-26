@@ -26,11 +26,11 @@ jobs:
     container: golang1.12
     displayName: Build Operator
     steps:
-      - task: CacheBeta@0
-        inputs:
-          key: $(Agent.OS)
-          path: $(Pipeline.Workspace)/vendor
-        displayName: Cache Vendor files
+      # - task: CacheBeta@0
+      #   inputs:
+      #     key: $(Agent.OS)
+      #     path: $(Pipeline.Workspace)/vendor
+      #   displayName: Cache Vendor files
 
       - script: go build cmd/manager/main.go
 
