@@ -31,13 +31,17 @@ jobs:
       - task: CacheBeta@0
         inputs:
           key: |
-            vendor
             $(Agent.OS)
             $(Build.SourcesDirectory)/go.sum
-          path: /go/pkg/mod
+          path: $(Pipeline.Workspace)/vendor
         displayName: Cache Vendor files
 
-      - script: go build cmd/manager/main.go
+      - script: ls -l /go/pkg/mod
+      - script: ls -l $(Pipeline.Workspace)
+
+      - script: |
+            go mod download
+            go build cmd/manager/main.go
 
 ######################################################################
 # Tests
@@ -53,9 +57,11 @@ jobs:
             vendor
             $(Agent.OS)
             $(Build.SourcesDirectory)/go.sum
-          path: /go/pkg/mod
+          path: $(Pipeline.Workspace)/vendor
         displayName: Cache Vendor files
-      - script: go test -cover $(go list ./...)
+      - script: |
+            go mod download
+            go test -cover $(go list ./...)
 
 ######################################################################
 # Container Creation
