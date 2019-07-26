@@ -32,6 +32,7 @@ jobs:
     displayName: Build Operator
     steps:
       - script: |
+            ls -l $(modulePath)
             mkdir -p $(GOPATH)/bin $(GOPATH)/pkg $(GOPATH)/src $(modulePath)
             shopt -s extglob
             mv !(gopath) '$(modulePath)'
