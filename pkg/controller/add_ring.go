@@ -1,7 +1,7 @@
 package controller
 
 import (
-	"ring-operator/pkg/controller/ring"
+	"github.com/microsoft/ring-operator/pkg/controller/ring"
 )
 
 func init() {

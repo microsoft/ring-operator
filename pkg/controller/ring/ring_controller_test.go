@@ -3,7 +3,7 @@ package ring_test
 import (
 	"context"
 	"fmt"
-	"ring-operator/pkg/controller/ring"
+	"github.com/microsoft/ring-operator/pkg/controller/ring"
 	"testing"
 
 	traefik "github.com/containous/traefik/pkg/provider/kubernetes/crd/traefik/v1alpha1"
@@ -14,7 +14,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client/fake"
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 
-	ringsv1alpha1 "ring-operator/pkg/apis/rings/v1alpha1"
+	ringsv1alpha1 "github.com/microsoft/ring-operator/pkg/apis/rings/v1alpha1"
 
 	"github.com/stretchr/testify/require"
 	appsv1 "k8s.io/api/apps/v1"

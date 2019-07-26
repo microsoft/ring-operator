@@ -2,7 +2,7 @@ package ring
 
 import (
 	"context"
-	ringsv1alpha1 "ring-operator/pkg/apis/rings/v1alpha1"
+	ringsv1alpha1 "github.com/microsoft/ring-operator/pkg/apis/rings/v1alpha1"
 )
 
 const ringFinalizer = "finalizer.rings.microsoft.com"

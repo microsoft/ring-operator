@@ -8,7 +8,7 @@ import (
     "os"
     "strings"
 
-    ringsv1alpha1 "ring-operator/pkg/apis/rings/v1alpha1"
+    ringsv1alpha1 "github.com/microsoft/ring-operator/pkg/apis/rings/v1alpha1"
 
     traefik "github.com/containous/traefik/pkg/provider/kubernetes/crd/traefik/v1alpha1"
 
