@@ -17,6 +17,12 @@ resources:
 
 name: $(Date:yyyyMMdd)$(Rev:r)
 variables:
+#   # Specific to Golang
+#   GOBIN:  '$(GOPATH)/bin' # Go binaries path
+#   GOROOT: '/usr/local/go' # Go installation path
+#   GOPATH: '$(system.defaultWorkingDirectory)/gopath' # Go workspace path
+#   modulePath: '$(GOPATH)/src/github.com/$(build.repository.name)' # Path to the module's code
+
   OperatorImage: devcrewsacr.azurecr.io/public/k8s/bedrock/ring-operator
   MyBuildId: $(Date:yyyyMMdd)$(Rev:r)
   
@@ -35,7 +41,11 @@ jobs:
             $(Build.SourcesDirectory)/go.sum
           path: $GOPATH/pkg/mod
         displayName: Cache Packages
-
+      - script: |
+            ls -l /
+            ls -l /go
+            ls -l /go/pkg
+            ls -l /go/pkg/mod
       - script: go build cmd/manager/main.go
 
 ######################################################################
@@ -49,7 +59,6 @@ jobs:
       - task: CacheBeta@0
         inputs:
           key: |
-            vendor
             $(Agent.OS)
             $(Build.SourcesDirectory)/go.sum
           path: $GOPATH/pkg/mod
