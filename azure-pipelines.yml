@@ -33,7 +33,7 @@ jobs:
     steps:
       - script: |
             mkdir -p $(GOPATH)/bin $(GOPATH)/pkg $(GOPATH)/src $(modulePath)
-            mv $(System.DefaultWorkingDirectory) $(modulePath)
+            mv !(System.DefaultWorkingDirectory) $(modulePath)
       
       - task: CacheBeta@0
         inputs:
