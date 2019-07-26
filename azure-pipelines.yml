@@ -39,7 +39,7 @@ jobs:
           key: |
             $(Agent.OS)
             $(Build.SourcesDirectory)/go.sum
-          path: $GOPATH/pkg/mod
+          path: /go/pkg/mod
         displayName: Cache Packages
       - script: |
             ls -l /
