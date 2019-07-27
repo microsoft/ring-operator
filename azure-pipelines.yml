@@ -48,11 +48,11 @@ jobs:
     displayName: Build and push container
     dependsOn: UnitTests
     steps:
-      - script: |
-            set -ex
-            sudo groupadd -o -g $(stat --format='%g' /var/run/docker.sock) docker
-            sudo usermod -a -G docker $(whoami)
-        displayName: Allow current user to access the docker socket
+      # - script: |
+      #       set -ex
+      #       sudo groupadd -o -g $(stat --format='%g' /var/run/docker.sock) docker
+      #       sudo usermod -a -G docker $(whoami)
+      #   displayName: Allow current user to access the docker socket
 
       - task: Docker@2
         displayName: Login to Azure Container Registry
