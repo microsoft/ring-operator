@@ -16,9 +16,6 @@ resources:
 #     - deploy/*
 
 name: $(Date:yyyyMMdd)$(Rev:r)
-variables:
-  OperatorImage: devcrewsacr.azurecr.io/public/k8s/bedrock/ring-operator
-  MyBuildId: $(Date:yyyyMMdd)$(Rev:r)
   
 jobs:      
 ######################################################################
@@ -47,6 +44,9 @@ jobs:
     container: docker
     displayName: Build and push container
     dependsOn: UnitTests
+    variables:
+      OperatorImage: devcrewsacr.azurecr.io/public/k8s/bedrock/ring-operator
+      MyBuildId: $(Date:yyyyMMdd)$(Rev:r)
     steps:
       # - script: |
       #       set -ex
@@ -61,8 +61,8 @@ jobs:
           azureSubscriptionEndpoint: AzureRM
           containerRegistry: AzureCR
       
-      - script: operator-sdk build $(OperatorPath):$(MyBuildId)
-      - script: operator-sdk build $(OperatorPath):$(latest)
+      - script: operator-sdk build $(OperatorImage):$(MyBuildId)
+      - script: operator-sdk build $(OperatorImage):$(latest)
       - script: | 
-            docker push $(OperatorPath):$(MyBuildId)
-            docker push $(OperatorPath):latest
+            docker push $(OperatorImage):$(MyBuildId)
+            docker push $(OperatorImage):latest
