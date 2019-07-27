@@ -75,7 +75,7 @@ jobs:
       - download: current
         artifact: build
 
-      - script: mv $(Pipeline.Workspace)/build .
+      - script: mv $(Pipeline.Workspace)/build $(System.DefaultWorkingDirectory)
 
       - task: Docker@2
         displayName: Login to Azure Container Registry
