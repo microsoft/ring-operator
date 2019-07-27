@@ -35,11 +35,8 @@ jobs:
             $(Build.SourcesDirectory)/go.sum
           path: $(GOPATH)/src
           cacheHitVar: CACHE_RESTORED
-
         displayName: Cache Vendor Directory
       
-      - script: ls -l $(Pipeline.Workspace)/go/src
-
       - script: go build cmd/manager/main.go
 
       - publish: $(Build.SourcesDirectory)/build
@@ -59,7 +56,7 @@ jobs:
             vendor
             $(Agent.OS)
             $(Build.SourcesDirectory)/go.sum
-          path: $(Build.SourcesDirectory)/vendor
+          path: $(GOPATH)/src
           cacheHitVar: CACHE_RESTORED
         displayName: Cache Vendor Directory
       
@@ -78,14 +75,6 @@ jobs:
       OperatorImage: devcrewsacr.azurecr.io/public/k8s/bedrock/ring-operator
       MyBuildId: $(Date:yyyyMMdd)$(Rev:r)
     steps:
-      # - script: |
-      #       set -ex
-      #       sudo groupadd -o -g $(stat --format='%g' /var/run/docker.sock) docker
-      #       sudo usermod -a -G docker $(whoami)
-      #   displayName: Allow current user to access the docker socket
-      # - checkout: none
-      # - download:
-      #   artifact: 
       - download: current
         artifact: build
 
