@@ -25,7 +25,15 @@ jobs:
     container: golang
     displayName: Build Operator
     steps:
-
+      - task: CacheBeta@0
+        inputs:
+          key: |
+            vendor
+            $(Agent.OS)
+            $(Build.SourcesDirectory)/go.sum
+          path: $(Build.SourcesDirectory)/vendor
+        displayName: Cache Vendor Directory
+        
       - bash: |
           if [ -f vendor ]; then
             echo "##vso[task.setVariable variable=VENDOREXISTS]true"
@@ -47,6 +55,15 @@ jobs:
     displayName: Run unit tests
     dependsOn: Build
     steps:
+      - task: CacheBeta@0
+        inputs:
+          key: |
+            vendor
+            $(Agent.OS)
+            $(Build.SourcesDirectory)/go.sum
+          path: $(Build.SourcesDirectory)/vendor
+        displayName: Cache Vendor Directory
+      
       - bash: |
           if [ -f vendor ]; then
             echo "##vso[task.setVariable variable=VENDOREXISTS]true"
