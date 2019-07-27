@@ -70,7 +70,7 @@ jobs:
     dependsOn: Build
     variables:
       OperatorImage: devcrewsacr.azurecr.io/public/k8s/bedrock/ring-operator
-      MyBuildId: $(Date:yyyyMMdd)$(Rev:r)
+      MyBuildId: $(Date:yyyyMMdd)-$(Rev:r)
     steps:
       - download: current
         artifact: build
