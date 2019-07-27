@@ -36,7 +36,7 @@ jobs:
           path: $(GOPATH)/src
           cacheHitVar: CACHE_RESTORED
         displayName: Cache Vendor Directory
-      
+      - script: go env
       - script: go mod vendor
         condition: ne(variables.CACHE_RESTORED, 'true')
 
