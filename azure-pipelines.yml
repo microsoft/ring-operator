@@ -70,8 +70,7 @@ jobs:
     displayName: Build and push container
     dependsOn: Build
     variables:
-      OperatorImage: devcrewsacr.azurecr.io/public/k8s/bedrock/ring-operator
-      # MyBuildId:  $(Date:yyyyMMdd)-$(Rev:r)
+      OperatorImage: public/k8s/bedrock/ring-operator
       MyBuildId: $(Build.BuildNumber)
     steps:
       - download: current
