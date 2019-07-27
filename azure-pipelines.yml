@@ -76,7 +76,7 @@ jobs:
         artifact: build
 
       - script: |
-            rm -rf $(Pipeline.Workspace)/build/_output
+            rm -rf $(System.DefaultWorkingDirectory)/build/_output
             mv $(Pipeline.Workspace)/build/_output $(System.DefaultWorkingDirectory)/build
 
       - task: Docker@2
