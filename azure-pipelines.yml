@@ -34,7 +34,6 @@ jobs:
             $(Agent.OS)
             $(Build.SourcesDirectory)/go.sum
           path: $(GOPATH)/src
-          cacheHitVar: CACHE_RESTORED
         displayName: Cache Vendor Directory
       
       - script: go build -o build/_output/bin/ring-operator cmd/manager/main.go
@@ -57,11 +56,7 @@ jobs:
             $(Agent.OS)
             $(Build.SourcesDirectory)/go.sum
           path: $(GOPATH)/src
-          cacheHitVar: CACHE_RESTORED
         displayName: Cache Vendor Directory
-      
-      - script: go mod vendor
-        condition: ne(variables.CACHE_RESTORED, 'true')
 
       - script: go test -cover $(go list ./...)
 
