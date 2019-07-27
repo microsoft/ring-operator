@@ -113,6 +113,4 @@ jobs:
           command: buildAndPush
           containerRegistry: AzureCR
           repository: $(OperatorImage)
-          tags: |
-            # tag1
-            latest
+          tags: latest
