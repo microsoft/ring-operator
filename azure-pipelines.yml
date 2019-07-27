@@ -17,6 +17,14 @@ trigger:
 #     - deploy/*
 
 name: $(Date:yyyyMMdd)$(Rev:r)
+
+variables:
+  Author: $(Build.RequestedForEmail)
+  # refs/head/master
+  BranchFullName: $(Build.SourceBranch)
+  # master
+  BranchName: $(Build.SourceBranchName)
+  CommitID: $(Build.SourceVersion)
   
 jobs:      
 ######################################################################
@@ -97,6 +105,10 @@ jobs:
           Dockerfile: build/Dockerfile
           repository: $(OperatorImage)
           tags: $(MyBuildId)
+          arguments: |
+            --label author=$(Author)
+            --label branch=$(BranchName)
+            --label commit=$(CommitID)
       
       - task: Docker@2
         displayName: Build and Push Latest
@@ -108,3 +120,7 @@ jobs:
           Dockerfile: build/Dockerfile
           repository: $(OperatorImage)
           tags: latest
+          arguments: |
+            --label author=$(Author)
+            --label branch=$(BranchName)
+            --label commit=$(CommitID)
