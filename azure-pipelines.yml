@@ -34,7 +34,7 @@ jobs:
       - script: go mod vendor
         condition: eq(variables.VENDOREXISTS, 'true')
 
-      - script: go build -mod=vendor cmd/manager/main.go
+      - script: go build cmd/manager/main.go
         
 
 ######################################################################
@@ -53,7 +53,7 @@ jobs:
       - script: go mod vendor
         condition: eq(variables.VENDOREXISTS, 'true')
 
-      - script: go test -mod=vendor -cover $(go list ./...)
+      - script: go test -cover $(go list ./...)
 
 ######################################################################
 # Container Creation
