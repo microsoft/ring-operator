@@ -25,7 +25,17 @@ jobs:
     container: golang
     displayName: Build Operator
     steps:
-      - script: go build cmd/manager/main.go
+
+      - bash: |
+          if [ -f vendor ]; then
+            echo "##vso[task.setVariable variable=VENDOREXISTS]true"
+          fi
+
+      - script: go mod vendor
+        condition: eq(variables.VENDOREXISTS, 'true')
+
+      - script: go build -mod=vendor cmd/manager/main.go
+        
 
 ######################################################################
 # Tests
@@ -35,7 +45,15 @@ jobs:
     displayName: Run unit tests
     dependsOn: Build
     steps:
-      - script: go test -cover $(go list ./...)
+      - bash: |
+          if [ -f vendor ]; then
+            echo "##vso[task.setVariable variable=VENDOREXISTS]true"
+          fi
+
+      - script: go mod vendor
+        condition: eq(variables.VENDOREXISTS, 'true')
+
+      - script: go test -mod=vendor -cover $(go list ./...)
 
 ######################################################################
 # Container Creation
@@ -61,8 +79,8 @@ jobs:
           azureSubscriptionEndpoint: AzureRM
           containerRegistry: AzureCR
       
-      - script: operator-sdk build $(OperatorImage):$(MyBuildId)
+      # - script: operator-sdk build $(OperatorImage):$(MyBuildId)
       - script: operator-sdk build $(OperatorImage):$(latest)
       - script: | 
-            docker push $(OperatorImage):$(MyBuildId)
+            # docker push $(OperatorImage):$(MyBuildId)
             docker push $(OperatorImage):latest
