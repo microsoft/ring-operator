@@ -5,7 +5,7 @@ resources:
     endpoint: AzureCR
 
   - container: docker
-    image: devcrewsacr.azurecr.io/operator-sdk-builder:latest
+    image: devcrewsacr.azurecr.io/docker-builder:latest
     endpoint: AzureCR
     options: '-v /usr/bin/docker:/usr/bin/docker -v /var/run/docker.sock:/var/run/docker.sock'
 
@@ -50,8 +50,8 @@ jobs:
     steps:
       - script: |
             set -ex
-            groupadd -o -g $(stat --format='%g' /var/run/docker.sock) docker
-            usermod -a -G docker $(whoami)
+            sudo groupadd -o -g $(stat --format='%g' /var/run/docker.sock) docker
+            sudo usermod -a -G docker $(whoami)
         displayName: Allow current user to access the docker socket
 
       - task: Docker@2
