@@ -60,7 +60,7 @@ jobs:
           path: $(GOPATH)/src
         displayName: Cache Vendor Directory
 
-      - script: go test -cover $(go list ./...)
+      - script: go test -cover ./...
 
 ######################################################################
 # Container Creation
