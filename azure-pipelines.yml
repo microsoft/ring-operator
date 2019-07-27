@@ -38,14 +38,10 @@ jobs:
 
         displayName: Cache Vendor Directory
       
-      - script: go mod vendor
-        condition: ne(variables.CACHE_RESTORED, 'true')
-
       - script: go build cmd/manager/main.go
 
       - publish: $(Build.SourcesDirectory)/build
-        artifact: build
-        
+        artifact: build        
 
 ######################################################################
 # Tests
