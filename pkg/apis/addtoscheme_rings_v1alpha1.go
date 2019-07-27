@@ -1,7 +1,7 @@
 package apis
 
 import (
-	"ring-operator/pkg/apis/rings/v1alpha1"
+	"github.com/microsoft/ring-operator/pkg/apis/rings/v1alpha1"
 )
 
 func init() {

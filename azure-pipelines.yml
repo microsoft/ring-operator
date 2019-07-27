@@ -1,0 +1,109 @@
+resources:
+  containers:
+  - container: golang
+    image: devcrewsacr.azurecr.io/operator-sdk-builder:latest
+    endpoint: AzureCR
+
+  - container: docker
+    image: devcrewsacr.azurecr.io/docker-builder:latest
+    endpoint: AzureCR
+    options: '-v /usr/bin/docker:/usr/bin/docker -v /var/run/docker.sock:/var/run/docker.sock'
+
+trigger:
+  batch: true
+  paths:
+    exclude:
+    - assets/*
+    - deploy/*
+
+name: $(Date:yyyyMMdd)$(Rev:r)
+
+jobs:      
+######################################################################
+# Build
+######################################################################
+  - job: Build
+    container: golang
+    displayName: Build Operator
+    variables:
+      GOPATH: $(Pipeline.Workspace)/go
+    steps:
+      - task: CacheBeta@0
+        inputs:
+          key: |
+            vendor
+            $(Agent.OS)
+            $(Build.SourcesDirectory)/go.sum
+          path: $(GOPATH)/src
+        displayName: Cache Vendor Directory
+      
+      - script: go build -o build/_output/bin/ring-operator cmd/manager/main.go
+
+      - publish: $(Build.SourcesDirectory)/build
+        artifact: build        
+
+######################################################################
+# Tests
+######################################################################
+  - job: UnitTests
+    container: golang
+    displayName: Run unit tests
+    dependsOn: Build
+    variables:
+      GOPATH: $(Pipeline.Workspace)/go
+    steps:
+      - task: CacheBeta@0
+        inputs:
+          key: |
+            vendor
+            $(Agent.OS)
+            $(Build.SourcesDirectory)/go.sum
+          path: $(GOPATH)/src
+        displayName: Cache Vendor Directory
+
+      - script: go test -cover github.com/microsoft/ring-operator/pkg/controller/ring
+
+######################################################################
+# Container Creation
+######################################################################
+  - job: Containerize
+    displayName: Build and push container
+    dependsOn: UnitTests
+    variables:
+      OperatorImage: public/k8s/bedrock/ring-operator
+      MyBuildId: $(Build.BuildNumber)
+    steps:
+      - download: current
+        artifact: build
+
+      - script: |
+            rm -rf $(System.DefaultWorkingDirectory)/build/_output
+            mv $(Pipeline.Workspace)/build/_output $(System.DefaultWorkingDirectory)/build
+
+      - task: Docker@2
+        displayName: Login to Azure Container Registry
+        inputs:
+          command: login
+          azureSubscriptionEndpoint: AzureRM
+          containerRegistry: AzureCR
+          
+      - task: Docker@2
+        displayName: Build and Push $(MyBuildId)
+        inputs:
+          command: buildAndPush
+          containerRegistry: AzureCR
+          buildContext: $(System.DefaultWorkingDirectory)
+          Dockerfile: build/Dockerfile
+          repository: $(OperatorImage)
+          tags: $(MyBuildId)
+      
+      - task: Docker@2
+        displayName: Build and Push latest
+        condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+        inputs:
+          command: buildAndPush
+          containerRegistry: AzureCR
+          buildContext: $(System.DefaultWorkingDirectory)
+          Dockerfile: build/Dockerfile
+          repository: $(OperatorImage)
+          tags: latest

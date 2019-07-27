@@ -10,7 +10,7 @@ import (
 	"github.com/Azure/go-autorest/autorest/to"
 	"io/ioutil"
 	"os"
-	ringsv1alpha1 "ring-operator/pkg/apis/rings/v1alpha1"
+	ringsv1alpha1 "github.com/microsoft/ring-operator/pkg/apis/rings/v1alpha1"
 )
 
 // CreateADGroup will create the AAD group in Azure

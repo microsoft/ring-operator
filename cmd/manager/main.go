@@ -11,8 +11,8 @@ import (
 
 	_ "k8s.io/client-go/plugin/pkg/client/auth"
 
-	"ring-operator/pkg/apis"
-	"ring-operator/pkg/controller"
+	"github.com/microsoft/ring-operator/pkg/apis"
+	"github.com/microsoft/ring-operator/pkg/controller"
 
 	"github.com/operator-framework/operator-sdk/pkg/k8sutil"
 	"github.com/operator-framework/operator-sdk/pkg/leader"
@@ -83,7 +83,7 @@ func main() {
 	ctx := context.TODO()
 
 	// Become the leader before proceeding
-	if err := leader.Become(ctx, "ring-operator-lock"); err != nil {
+	if err := leader.Become(ctx, "github.com/microsoft/ring-operator-lock"); err != nil {
 		log.Error(err, "Cannot become leader")
 		os.Exit(1)
 	}

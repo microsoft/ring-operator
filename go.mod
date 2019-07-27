@@ -1,4 +1,4 @@
-module ring-operator
+module github.com/microsoft/ring-operator
 
 go 1.12
 
