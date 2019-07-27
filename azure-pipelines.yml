@@ -32,17 +32,11 @@ jobs:
             $(Agent.OS)
             $(Build.SourcesDirectory)/go.sum
           path: $(Build.SourcesDirectory)/vendor
+          cacheHitVar: CACHE_RESTORED
         displayName: Cache Vendor Directory
-
-      - bash: |
-          if [ -f vendor ]; then
-            echo "##vso[task.setVariable variable=VENDOREXISTS]true"
-          else
-            echo "##vso[task.setVariable variable=VENDOREXISTS]false"
-          fi
-
+      
       - script: go mod vendor
-        condition: eq(variables.VENDOREXISTS, 'false')
+        condition: ne(variables.CACHE_RESTORED, 'true')
 
       - script: go build cmd/manager/main.go
 
@@ -65,17 +59,11 @@ jobs:
             $(Agent.OS)
             $(Build.SourcesDirectory)/go.sum
           path: $(Build.SourcesDirectory)/vendor
+          cacheHitVar: CACHE_RESTORED
         displayName: Cache Vendor Directory
       
-      - bash: |
-          if [ -f vendor ]; then
-            echo "##vso[task.setVariable variable=VENDOREXISTS]true"
-          else
-            echo "##vso[task.setVariable variable=VENDOREXISTS]false"
-          fi
-
       - script: go mod vendor
-        condition: eq(variables.VENDOREXISTS, 'false')
+        condition: ne(variables.CACHE_RESTORED, 'true')
 
       - script: go test -cover $(go list ./...)
 
