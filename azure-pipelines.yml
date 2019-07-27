@@ -38,6 +38,8 @@ jobs:
 
         displayName: Cache Vendor Directory
       
+      - script: ls -l $(Pipeline.Workspace)/go/src
+
       - script: go build cmd/manager/main.go
 
       - publish: $(Build.SourcesDirectory)/build
