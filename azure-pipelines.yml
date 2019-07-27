@@ -48,6 +48,8 @@ jobs:
     container: golang
     displayName: Run unit tests
     dependsOn: Build
+    variables:
+      GOPATH: $(Pipeline.Workspace)/go
     steps:
       - task: CacheBeta@0
         inputs:
