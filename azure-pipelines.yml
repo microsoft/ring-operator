@@ -60,7 +60,7 @@ jobs:
           path: $(GOPATH)/src
         displayName: Cache Vendor Directory
 
-      - script: go test -cover ./...
+      - script: go test -cover github.com/microsoft/ring-operator/pkg/controller/ring
 
 ######################################################################
 # Container Creation
