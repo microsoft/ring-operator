@@ -25,7 +25,7 @@ jobs:
     container: golang
     displayName: Build Operator
     variables:
-      GOPATH: $(System.DefaultWorkingDirectory)/go
+      GOPATH: $HOME/go
     steps:
       - task: CacheBeta@0
         inputs:
@@ -35,8 +35,9 @@ jobs:
             $(Build.SourcesDirectory)/go.sum
           path: $(GOPATH)/src
           cacheHitVar: CACHE_RESTORED
+
         displayName: Cache Vendor Directory
-      - script: go env
+      
       - script: go mod vendor
         condition: ne(variables.CACHE_RESTORED, 'true')
 
