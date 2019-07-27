@@ -92,6 +92,7 @@ jobs:
         inputs:
           command: buildAndPush
           containerRegistry: AzureCR
+          buildContext: $(System.DefaultWorkingDirectory)
           Dockerfile: build/Dockerfile
           repository: $(OperatorImage)
           tags: latest
