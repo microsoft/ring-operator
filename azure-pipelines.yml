@@ -29,7 +29,7 @@ jobs:
       - bash: |
           if [ -f vendor ]; then
             echo "##vso[task.setVariable variable=VENDOREXISTS]true"
-          elif
+          else
             echo "##vso[task.setVariable variable=VENDOREXISTS]false"
           fi
 
@@ -50,7 +50,7 @@ jobs:
       - bash: |
           if [ -f vendor ]; then
             echo "##vso[task.setVariable variable=VENDOREXISTS]true"
-          elif
+          else
             echo "##vso[task.setVariable variable=VENDOREXISTS]false"
           fi
 
