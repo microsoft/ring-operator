@@ -87,5 +87,6 @@ jobs:
         inputs:
           command: buildAndPush
           containerRegistry: AzureCR
+          Dockerfile: build/Dockerfile
           repository: $(OperatorImage)
           tags: latest
