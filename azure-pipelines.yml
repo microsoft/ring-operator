@@ -67,7 +67,7 @@ jobs:
 ######################################################################
   - job: Containerize
     displayName: Build and push container
-    dependsOn: UnitTests
+    dependsOn: Build
     variables:
       OperatorImage: devcrewsacr.azurecr.io/public/k8s/bedrock/ring-operator
       MyBuildId: $(Date:yyyyMMdd)$(Rev:r)
@@ -94,7 +94,7 @@ jobs:
           buildContext: $(System.DefaultWorkingDirectory)
           Dockerfile: build/Dockerfile
           repository: $(OperatorImage)
-          tags: $(MyBuildId)
+          tags: '$(MyBuildId)'
       
       - task: Docker@2
         displayName: Build and Push Latest
