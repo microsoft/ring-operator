@@ -25,7 +25,7 @@ jobs:
     container: golang
     displayName: Build Operator
     variables:
-      GOPATH: $(Agent.HomeDirectory)/go
+      GOPATH: $(Pipeline.Workspace)/go
     steps:
       - task: CacheBeta@0
         inputs:
