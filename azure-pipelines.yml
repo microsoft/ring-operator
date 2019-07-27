@@ -33,7 +33,7 @@ jobs:
             $(Build.SourcesDirectory)/go.sum
           path: $(Build.SourcesDirectory)/vendor
         displayName: Cache Vendor Directory
-        
+
       - bash: |
           if [ -f vendor ]; then
             echo "##vso[task.setVariable variable=VENDOREXISTS]true"
@@ -45,6 +45,9 @@ jobs:
         condition: eq(variables.VENDOREXISTS, 'false')
 
       - script: go build cmd/manager/main.go
+
+      - publish: $(Build.SourcesDirectory)/build
+        artifact: build
         
 
 ######################################################################
@@ -94,6 +97,8 @@ jobs:
       # - checkout: none
       # - download:
       #   artifact: 
+      - download: current
+        artifact: build
 
       - task: Docker@2
         displayName: Login to Azure Container Registry
