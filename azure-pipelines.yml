@@ -76,6 +76,11 @@ jobs:
     variables:
       OperatorImage: public/k8s/bedrock/ring-operator
       MyBuildId: $(Build.BuildNumber)
+
+      # Buildah
+      STORAGE_DRIVER: vfs
+      BUILDAH_FORMAT: docker
+
     steps:
       - download: current
         artifact: build
@@ -91,24 +96,25 @@ jobs:
           command: login
           azureSubscriptionEndpoint: AzureRM
           containerRegistry: AzureCR
-          
-      - task: Docker@2
-        displayName: Build and Push $(MyBuildId)
-        inputs:
-          command: buildAndPush
-          containerRegistry: AzureCR
-          buildContext: $(System.DefaultWorkingDirectory)
-          Dockerfile: build/Dockerfile
-          repository: $(OperatorImage)
-          tags: $(MyBuildId)
       
-      - task: Docker@2
-        displayName: Build and Push latest
-        condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
-        inputs:
-          command: buildAndPush
-          containerRegistry: AzureCR
-          buildContext: $(System.DefaultWorkingDirectory)
-          Dockerfile: build/Dockerfile
-          repository: $(OperatorImage)
-          tags: latest
+      - script: cat ~/.docker/config.json
+      # - task: Docker@2
+      #   displayName: Build and Push $(MyBuildId)
+      #   inputs:
+      #     command: buildAndPush
+      #     containerRegistry: AzureCR
+      #     buildContext: $(System.DefaultWorkingDirectory)
+      #     Dockerfile: build/Dockerfile
+      #     repository: $(OperatorImage)
+      #     tags: $(MyBuildId)
+      
+      # - task: Docker@2
+      #   displayName: Build and Push latest
+      #   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+      #   inputs:
+      #     command: buildAndPush
+      #     containerRegistry: AzureCR
+      #     buildContext: $(System.DefaultWorkingDirectory)
+      #     Dockerfile: build/Dockerfile
+      #     repository: $(OperatorImage)
+      #     tags: latest
