@@ -85,6 +85,8 @@ jobs:
       - download: current
         artifact: build
 
+      - script: env
+
       - script: |
             rm -rf $(System.DefaultWorkingDirectory)/build/_output
             mv $(Pipeline.Workspace)/build/_output $(System.DefaultWorkingDirectory)/build
