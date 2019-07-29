@@ -74,8 +74,6 @@ jobs:
     container: docker
     dependsOn: UnitTests
     variables:
-      Registry: $(Registry)
-      OperatorImage: $(Repository)
       MyBuildId: $(Build.BuildNumber)
 
       # Buildah
@@ -96,11 +94,11 @@ jobs:
         inputs:
           azureSubscription: AzureRM
           scriptPath: build/login.sh
-          arguments: $(Registry) $(OperatorImage)
+          arguments: $(OperatorRegistry) $(OperatorRepository)
 
-      - script: buildah bud -f build/Dockerfile -t $(OperatorImage):$(MyBuildId)
+      - script: buildah bud -f build/Dockerfile -t $(OperatorRegistry)/$(OperatorRepository):$(MyBuildId)
         displayName: Build and Push $(MyBuildId)
         
-      - script: buildah bud -f build/Dockerfile -t $(OperatorImage):$(MyBuildId)
+      - script: buildah bud -f build/Dockerfile -t $(OperatorRegistry)/$(OperatorRepository):$(MyBuildId)
         displayName: Build and Push latest
         condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
