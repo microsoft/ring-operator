@@ -5,8 +5,7 @@ resources:
     endpoint: AzureCR
 
   - container: docker
-    image: devcrewsacr.azurecr.io/docker-builder:latest
-    endpoint: AzureCR
+    image: debian:buster
     options: '-v /usr/bin/docker:/usr/bin/docker -v /var/run/docker.sock:/var/run/docker.sock'
 
 trigger:
@@ -17,6 +16,8 @@ trigger:
     - deploy/*
 
 name: $(Date:yyyyMMdd)$(Rev:r)
+variables:
+  skipComponentGovernanceDetection: true
 
 jobs:      
 ######################################################################
@@ -68,6 +69,7 @@ jobs:
 ######################################################################
   - job: Containerize
     displayName: Build and push container
+    container: docker
     dependsOn: UnitTests
     variables:
       OperatorImage: public/k8s/bedrock/ring-operator
