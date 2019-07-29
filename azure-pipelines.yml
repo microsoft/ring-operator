@@ -74,6 +74,7 @@ jobs:
     container: docker
     dependsOn: UnitTests
     variables:
+      Registry: hellorings.azurecr.io
       OperatorImage: public/k8s/bedrock/ring-operator
       MyBuildId: $(Build.BuildNumber)
 
@@ -85,38 +86,21 @@ jobs:
       - download: current
         artifact: build
 
-      - script: env
-
       - script: |
             rm -rf $(System.DefaultWorkingDirectory)/build/_output
             mv $(Pipeline.Workspace)/build/_output $(System.DefaultWorkingDirectory)/build
         displayName: Download build artifact
 
-      - task: Docker@2
-        displayName: Login to Azure Container Registry
+      - task: AzureCLI@1
+        displayName: Login to ACR
         inputs:
-          command: login
-          azureSubscriptionEndpoint: AzureRM
-          containerRegistry: AzureCR
-      
-      # - script: cat ~/.docker/config.json
-      # - task: Docker@2
-      #   displayName: Build and Push $(MyBuildId)
-      #   inputs:
-      #     command: buildAndPush
-      #     containerRegistry: AzureCR
-      #     buildContext: $(System.DefaultWorkingDirectory)
-      #     Dockerfile: build/Dockerfile
-      #     repository: $(OperatorImage)
-      #     tags: $(MyBuildId)
-      
-      # - task: Docker@2
-      #   displayName: Build and Push latest
-      #   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
-      #   inputs:
-      #     command: buildAndPush
-      #     containerRegistry: AzureCR
-      #     buildContext: $(System.DefaultWorkingDirectory)
-      #     Dockerfile: build/Dockerfile
-      #     repository: $(OperatorImage)
-      #     tags: latest
+          azureSubscription: AzureRM
+          scriptPath: build/login.sh
+          arguments: $(Registry) $(OperatorImage)
+
+      - script: buildah bud -f build/Dockerfile -t $(OperatorImage):$(MyBuildId)
+        displayName: Build and Push $(MyBuildId)
+        
+      - script: buildah bud -f build/Dockerfile -t $(OperatorImage):$(MyBuildId)
+        displayName: Build and Push latest
+        condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
