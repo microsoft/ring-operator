@@ -74,8 +74,8 @@ jobs:
     container: docker
     dependsOn: UnitTests
     variables:
-      Registry: hellorings.azurecr.io
-      OperatorImage: public/k8s/bedrock/ring-operator
+      Registry: $(Registry)
+      OperatorImage: $(Repository)
       MyBuildId: $(Build.BuildNumber)
 
       # Buildah
