@@ -39,6 +39,7 @@ jobs:
         displayName: Cache Vendor Directory
       
       - script: go build -o build/_output/bin/ring-operator cmd/manager/main.go
+        displayName: Build project
 
       - publish: $(Build.SourcesDirectory)/build
         artifact: build        
