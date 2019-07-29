@@ -5,8 +5,7 @@ resources:
     endpoint: AzureCR
 
   - container: docker
-    image: devcrewsacr.azurecr.io/docker-builder:latest
-    endpoint: AzureCR
+    image: debian:buster
     options: '-v /usr/bin/docker:/usr/bin/docker -v /var/run/docker.sock:/var/run/docker.sock'
 
 trigger:
@@ -17,6 +16,8 @@ trigger:
     - deploy/*
 
 name: $(Date:yyyyMMdd)$(Rev:r)
+variables:
+  skipComponentGovernanceDetection: true
 
 jobs:      
 ######################################################################
@@ -38,6 +39,7 @@ jobs:
         displayName: Cache Vendor Directory
       
       - script: go build -o build/_output/bin/ring-operator cmd/manager/main.go
+        displayName: Build project
 
       - publish: $(Build.SourcesDirectory)/build
         artifact: build        
@@ -47,7 +49,7 @@ jobs:
 ######################################################################
   - job: UnitTests
     container: golang
-    displayName: Run unit tests
+    displayName: Unit Tests
     dependsOn: Build
     variables:
       GOPATH: $(Pipeline.Workspace)/go
@@ -62,12 +64,14 @@ jobs:
         displayName: Cache Vendor Directory
 
       - script: go test -cover github.com/microsoft/ring-operator/pkg/controller/ring
+        displayName: Run unit tests
 
 ######################################################################
 # Container Creation
 ######################################################################
   - job: Containerize
-    displayName: Build and push container
+    displayName: Publish Container
+    container: docker
     dependsOn: UnitTests
     variables:
       OperatorImage: public/k8s/bedrock/ring-operator
@@ -79,6 +83,7 @@ jobs:
       - script: |
             rm -rf $(System.DefaultWorkingDirectory)/build/_output
             mv $(Pipeline.Workspace)/build/_output $(System.DefaultWorkingDirectory)/build
+        displayName: Download build artifact
 
       - task: Docker@2
         displayName: Login to Azure Container Registry
