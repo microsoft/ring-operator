@@ -20,6 +20,7 @@ RUN apt-get update && \
         go-md2man \
         golang-1.10 && \
     apt-get clean
+
 RUN mkdir ~/buildah && \
     cd ~/buildah && \
     export GOPATH=`pwd` && \
@@ -29,3 +30,13 @@ RUN mkdir ~/buildah && \
     make install install.runc && \
     buildah --help && \
     buildah --version
+
+RUN apt-get update && \
+    apt-get -y install ca-certificates curl apt-transport-https lsb-release gnupg && \
+    curl -sL https://packages.microsoft.com/keys/microsoft.asc | \
+    gpg --dearmor | \
+    tee /etc/apt/trusted.gpg.d/microsoft.asc.gpg > /dev/null && \
+    echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $(lsb_release -cs) main" | \
+    tee /etc/apt/sources.list.d/azure-cli.list && \
+    apt-get update && \
+    apt-get -y install azure-cli

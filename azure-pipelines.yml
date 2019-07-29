@@ -5,8 +5,8 @@ resources:
     endpoint: AzureCR
 
   - container: docker
-    image: debian:buster
-    # options: '-v /usr/bin/docker:/usr/bin/docker -v /var/run/docker.sock:/var/run/docker.sock'
+    image: devcrewsacr.azurecr.io/docker-builder:latest
+    endpoint: AzureCR
 
 trigger:
   batch: true
