@@ -6,7 +6,7 @@ resources:
 
   - container: docker
     image: debian:buster
-    options: '-v /usr/bin/docker:/usr/bin/docker -v /var/run/docker.sock:/var/run/docker.sock'
+    # options: '-v /usr/bin/docker:/usr/bin/docker -v /var/run/docker.sock:/var/run/docker.sock'
 
 trigger:
   batch: true
@@ -99,7 +99,7 @@ jobs:
           azureSubscriptionEndpoint: AzureRM
           containerRegistry: AzureCR
       
-      - script: cat ~/.docker/config.json
+      # - script: cat ~/.docker/config.json
       # - task: Docker@2
       #   displayName: Build and Push $(MyBuildId)
       #   inputs:
