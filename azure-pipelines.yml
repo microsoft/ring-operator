@@ -27,20 +27,24 @@ jobs:
     container: golang
     displayName: Build Operator
     variables:
-      GOPATH: /tmp/go
+      GOPATH: $(System.DefaultWorkingDirectory)/gopath
+      modulePath: $(GOPATH)/src/github.com/$(Build.Repository.Name)
     steps:
+      - script: |
+          mkdir -p '$(GOPATH)/pkg'
+          mkdir -p '$(modulePath)'
+          shopt -s extglob
+          shopt -s dotglob
+          mv !(gopath) '$(modulePath)'
+        displayName: 'Set up the Go workspace'
+
       - task: CacheBeta@0
+        continueOnError: true
         inputs:
           key: $(Build.SourcesDirectory)/go.sum
           path: $(GOPATH)/src
         displayName: Cache Vendor Directory
       
-      - script: mkdir -p \
-          $(GOPATH)/src \
-          $(GOPATH)/bin \
-          $(GOPATH)/pkg
-        displayName: Ensure go paths exist
-
       - script: |
           GOOS=linux \
           GOARCH=amd64 \
@@ -63,9 +67,19 @@ jobs:
     displayName: Unit Tests
     dependsOn: Build
     variables:
-      GOPATH: /tmp/go
+      GOPATH: $(System.DefaultWorkingDirectory)/gopath
+      modulePath: $(GOPATH)/src/github.com/$(Build.Repository.Name)
     steps:
+      - script: |
+          mkdir -p '$(GOPATH)/pkg'
+          mkdir -p '$(modulePath)'
+          shopt -s extglob
+          shopt -s dotglob
+          mv !(gopath) '$(modulePath)'
+        displayName: 'Set up the Go workspace'
+
       - task: CacheBeta@0
+        continueOnError: true
         inputs:
           key: $(Build.SourcesDirectory)/go.sum
           path: $(GOPATH)/src
