@@ -4,18 +4,19 @@ metadata:
   name: traefik
 spec:
   ports:
-    - protocol: TCP
-      name: http
-      port: 8000
-    - protocol: TCP
-      name: https
-      port: 4443
-    - protocol: TCP
-      name: internal
-      port: 8010
-    - protocol: TCP
-      name: admin
-      port: 8080
-  type: LoadBalancer
+  - protocol: TCP
+    name: http
+    port: 80
+    targetPort: 8000
+  - protocol: TCP
+    name: https
+    port: 443
+    targetPort: 4443
+  - protocol: TCP
+    name: internal
+    port: 8010
+  - protocol: TCP
+    name: admin
+    port: 8080
   selector:
     app: traefik
