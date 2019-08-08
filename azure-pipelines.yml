@@ -29,11 +29,11 @@ jobs:
     variables:
       GOPATH: $(Pipeline.Workspace)/go
     steps:
-      # - task: CacheBeta@0
-      #   inputs:
-      #     key: $(Build.SourcesDirectory)/go.sum
-      #     path: $(Pipeline.Workspace)/go/src
-      #   displayName: Cache Vendor Directory
+      - task: CacheBeta@0
+        inputs:
+          key: $(Build.SourcesDirectory)/go.sum
+          path: $(Pipeline.Workspace)/go/src
+        displayName: Cache Vendor Directory
       
       - script: mkdir -p \
           $(GOPATH)/src \
@@ -65,11 +65,11 @@ jobs:
     variables:
       GOPATH: $(Pipeline.Workspace)/go
     steps:
-      # - task: CacheBeta@0
-      #   inputs:
-      #     key: $(Build.SourcesDirectory)/go.sum
-      #     path: $(Pipeline.Workspace)/go/src
-      #   displayName: Cache Vendor Directory
+      - task: CacheBeta@0
+        inputs:
+          key: $(Build.SourcesDirectory)/go.sum
+          path: $(Pipeline.Workspace)/go/src
+        displayName: Cache Vendor Directory
 
       - script: go test -cover github.com/microsoft/ring-operator/pkg/controller/ring
         displayName: Run unit tests
