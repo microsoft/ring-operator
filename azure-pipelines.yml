@@ -43,14 +43,14 @@ jobs:
           $(GOPATH)/bin \
           $(GOPATH)/pkg
         displayName: Ensure go paths exist
-        
+
       - script: |
           GOOS=linux \
           GOARCH=amd64 \
           CGO_ENABLED=0 \
           go build \
-            -gcflags "all=-trimpath=${dirname "$(pwd)"}" \
-            -asmflags "all=-trimpath=${dirname "$(pwd)"}" \
+            -gcflags "all=-trimpath=$(dirname $(pwd)) \
+            -asmflags "all=-trimpath=$(dirname $(pwd)) \
             -o build/_output/bin/ring-operator \
             cmd/manager/main.go
         displayName: Build project
