@@ -79,7 +79,7 @@ jobs:
 ######################################################################
   - job: Containerize
     displayName: Publish Container
-    container: docker
+    # container: docker
     dependsOn: UnitTests
     variables:
       OperatorImage: public/k8s/bedrock/ring-operator
@@ -100,10 +100,10 @@ jobs:
           azureSubscriptionEndpoint: AzureRM
           containerRegistry: AzureCR
       
-      - script: |
-          chmod +x build/bin/entrypoint
-          chmod +x build/bin/user_setup
-        displayName: Set up Docker build
+      # - script: |
+      #     chmod +x build/bin/entrypoint
+      #     chmod +x build/bin/user_setup
+      #   displayName: Set up Docker build
 
       - task: Docker@2
         displayName: Build and Push $(MyBuildId)
