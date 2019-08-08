@@ -28,7 +28,7 @@ jobs:
     displayName: Build Operator
     variables:
       GOPATH: $(System.DefaultWorkingDirectory)/gopath
-      modulePath: $(GOPATH)/src/github.com/$(Build.Repository.Name)
+      modulePath: ring-operator
     steps:
       - script: |
           mkdir -p '$(GOPATH)/pkg'
@@ -68,7 +68,7 @@ jobs:
     dependsOn: Build
     variables:
       GOPATH: $(System.DefaultWorkingDirectory)/gopath
-      modulePath: $(GOPATH)/src/github.com/$(Build.Repository.Name)
+      modulePath: ring-operator
     steps:
       - script: |
           mkdir -p '$(GOPATH)/pkg'
