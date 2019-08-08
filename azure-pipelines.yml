@@ -38,7 +38,16 @@ jobs:
           path: $(GOPATH)/src
         displayName: Cache Vendor Directory
       
-      - script: go build -o build/_output/bin/ring-operator cmd/manager/main.go
+      - script: |
+          go build \
+            -gcflags "all=-trimpath=ring-operator" \
+            -asmflags "all=-trimpath=ring-operator" \
+            -o build/_output/bin/ring-operator \
+            cmd/manager/main.go
+        variables:
+          GOOS: linux
+          GOARCH: amd64
+          CGO_ENABLED: "0"
         displayName: Build project
 
       - publish: $(Build.SourcesDirectory)/build
@@ -91,7 +100,12 @@ jobs:
           command: login
           azureSubscriptionEndpoint: AzureRM
           containerRegistry: AzureCR
-          
+      
+      - script: |
+          chmod +x build/bin/entrypoint
+          chmod +x build/bin/user_setup
+        displayName: Set up Docker build
+
       - task: Docker@2
         displayName: Build and Push $(MyBuildId)
         inputs:
