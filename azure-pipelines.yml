@@ -56,7 +56,7 @@ jobs:
             $(modulePath)/cmd/manager/main.go
         displayName: Build project
 
-      - publish: $(Build.SourcesDirectory)/build
+      - publish: $(modulePath)/build
         artifact: build        
 
 ######################################################################
