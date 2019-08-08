@@ -38,6 +38,12 @@ jobs:
           path: $(GOPATH)/src
         displayName: Cache Vendor Directory
       
+      - script: mkdir -p \
+          $(GOPATH)/src \
+          $(GOPATH)/bin \
+          $(GOPATH)/pkg
+        displayName: Ensure go paths exist
+        
       - script: |
           GOOS=linux \
           GOARCH=amd64 \
