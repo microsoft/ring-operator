@@ -52,8 +52,8 @@ jobs:
           go build \
             -gcflags "all=-trimpath=$(dirname $(pwd))" \
             -asmflags "all=-trimpath=$(dirname $(pwd))" \
-            -o build/_output/bin/ring-operator \
-            cmd/manager/main.go
+            -o $(modulePath)/build/_output/bin/ring-operator \
+            $(modulePath)/cmd/manager/main.go
         displayName: Build project
 
       - publish: $(Build.SourcesDirectory)/build
@@ -85,7 +85,7 @@ jobs:
           path: $(GOPATH)/src
         displayName: Cache Vendor Directory
 
-      - script: go test -cover github.com/microsoft/ring-operator/pkg/controller/ring
+      - script: go test -cover $(modulePath)/pkg/controller/ring
         displayName: Run unit tests
 
 ######################################################################
