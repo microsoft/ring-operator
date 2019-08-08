@@ -44,7 +44,6 @@ jobs:
           $(GOPATH)/pkg
         displayName: Ensure go paths exist
 
-      - script: echo $(dirname $(pwd))
       - script: |
           GOOS=linux \
           GOARCH=amd64 \
