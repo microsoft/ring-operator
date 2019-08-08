@@ -1,4 +1,3 @@
-pool: Hosted Ubuntu 1604
 resources:
   containers:
   - container: golang
