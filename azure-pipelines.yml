@@ -39,15 +39,14 @@ jobs:
         displayName: Cache Vendor Directory
       
       - script: |
+          GOOS=linux \
+          GOARCH=amd64 \
+          CGO_ENABLED=0 \
           go build \
             -gcflags "all=-trimpath=ring-operator" \
             -asmflags "all=-trimpath=ring-operator" \
             -o build/_output/bin/ring-operator \
             cmd/manager/main.go
-        variables:
-          GOOS: linux
-          GOARCH: amd64
-          CGO_ENABLED: "0"
         displayName: Build project
 
       - publish: $(Build.SourcesDirectory)/build
