@@ -27,12 +27,12 @@ jobs:
     container: golang
     displayName: Build Operator
     variables:
-      GOPATH: $(Pipeline.Workspace)/go
+      GOPATH: /tmp/go
     steps:
       - task: CacheBeta@0
         inputs:
           key: $(Build.SourcesDirectory)/go.sum
-          path: $(Pipeline.Workspace)/go/src
+          path: $(GOPATH)/src
         displayName: Cache Vendor Directory
       
       - script: mkdir -p \
@@ -63,12 +63,12 @@ jobs:
     displayName: Unit Tests
     dependsOn: Build
     variables:
-      GOPATH: $(Pipeline.Workspace)/go
+      GOPATH: /tmp/go
     steps:
       - task: CacheBeta@0
         inputs:
           key: $(Build.SourcesDirectory)/go.sum
-          path: $(Pipeline.Workspace)/go/src
+          path: $(GOPATH)/src
         displayName: Cache Vendor Directory
 
       - script: go test -cover github.com/microsoft/ring-operator/pkg/controller/ring
