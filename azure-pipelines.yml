@@ -41,7 +41,7 @@ jobs:
       - task: CacheBeta@0
         continueOnError: true
         inputs:
-          key: $(Build.SourcesDirectory)/go.sum
+          key: $(modulePath)/go.sum
           path: $(GOPATH)/src
         displayName: Cache Vendor Directory
       
@@ -81,7 +81,7 @@ jobs:
       - task: CacheBeta@0
         continueOnError: true
         inputs:
-          key: $(Build.SourcesDirectory)/go.sum
+          key: $(modulePath)/go.sum
           path: $(GOPATH)/src
         displayName: Cache Vendor Directory
 
