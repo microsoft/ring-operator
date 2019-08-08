@@ -31,10 +31,7 @@ jobs:
     steps:
       - task: CacheBeta@0
         inputs:
-          key: |
-            vendor
-            $(Agent.OS)
-            $(Build.SourcesDirectory)/go.sum
+          key: $(Build.SourcesDirectory)/go.sum
           path: $(GOPATH)/src
         displayName: Cache Vendor Directory
       
