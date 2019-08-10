@@ -1,6 +1,9 @@
 package controller
 
 import (
+	"github.com/microsoft/ring-operator/pkg/controller/ingressroute"
+	"github.com/microsoft/ring-operator/pkg/controller/ring"
+	"github.com/microsoft/ring-operator/pkg/controller/service"
 	"sigs.k8s.io/controller-runtime/pkg/manager"
 )
 
@@ -15,4 +18,10 @@ func AddToManager(m manager.Manager) error {
 		}
 	}
 	return nil
+}
+
+func init() {
+	AddToManagerFuncs = append(AddToManagerFuncs, ring.Add)
+	AddToManagerFuncs = append(AddToManagerFuncs, service.Add)
+	AddToManagerFuncs = append(AddToManagerFuncs, ingressroute.Add)
 }
