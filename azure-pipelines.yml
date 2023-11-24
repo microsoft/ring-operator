@@ -27,21 +27,37 @@ jobs:
     container: golang
     displayName: Build Operator
     variables:
-      GOPATH: $(Pipeline.Workspace)/go
+      GOPATH: $(System.DefaultWorkingDirectory)/gopath
+      modulePath: ring-operator
     steps:
+      - script: |
+          mkdir -p '$(GOPATH)/pkg'
+          mkdir -p '$(modulePath)'
+          shopt -s extglob
+          shopt -s dotglob
+          mv !(gopath|ring-operator) '$(modulePath)'
+        displayName: 'Set up the Go workspace'
+
       - task: CacheBeta@0
+        continueOnError: true
         inputs:
-          key: |
-            vendor
-            $(Agent.OS)
-            $(Build.SourcesDirectory)/go.sum
+          key: $(modulePath)/go.sum
           path: $(GOPATH)/src
         displayName: Cache Vendor Directory
       
-      - script: go build -o build/_output/bin/ring-operator cmd/manager/main.go
+      - script: |
+          GOOS=linux \
+          GOARCH=amd64 \
+          CGO_ENABLED=0 \
+          go build \
+            -gcflags "all=-trimpath=$(dirname $(pwd))" \
+            -asmflags "all=-trimpath=$(dirname $(pwd))" \
+            -o build/_output/bin/ring-operator \
+            cmd/manager/main.go
+        workingDirectory: $(modulePath)
         displayName: Build project
 
-      - publish: $(Build.SourcesDirectory)/build
+      - publish: $(modulePath)/build
         artifact: build        
 
 ######################################################################
@@ -52,18 +68,26 @@ jobs:
     displayName: Unit Tests
     dependsOn: Build
     variables:
-      GOPATH: $(Pipeline.Workspace)/go
+      GOPATH: $(System.DefaultWorkingDirectory)/gopath
+      modulePath: ring-operator
     steps:
+      - script: |
+          mkdir -p '$(GOPATH)/pkg'
+          mkdir -p '$(modulePath)'
+          shopt -s extglob
+          shopt -s dotglob
+          mv !(gopath|ring-operator) '$(modulePath)'
+        displayName: 'Set up the Go workspace'
+
       - task: CacheBeta@0
+        continueOnError: true
         inputs:
-          key: |
-            vendor
-            $(Agent.OS)
-            $(Build.SourcesDirectory)/go.sum
+          key: $(modulePath)/go.sum
           path: $(GOPATH)/src
         displayName: Cache Vendor Directory
 
-      - script: go test -cover github.com/microsoft/ring-operator/pkg/controller/ring
+      - script: go test -cover pkg/controller/ring
+        workingDirectory: $(modulePath)
         displayName: Run unit tests
 
 ######################################################################
@@ -71,7 +95,7 @@ jobs:
 ######################################################################
   - job: Containerize
     displayName: Publish Container
-    container: docker
+    # container: docker
     dependsOn: UnitTests
     variables:
       OperatorImage: public/k8s/bedrock/ring-operator
@@ -91,7 +115,12 @@ jobs:
           command: login
           azureSubscriptionEndpoint: AzureRM
           containerRegistry: AzureCR
-          
+      
+      # - script: |
+      #     chmod +x build/bin/entrypoint
+      #     chmod +x build/bin/user_setup
+      #   displayName: Set up Docker build
+
       - task: Docker@2
         displayName: Build and Push $(MyBuildId)
         inputs:
